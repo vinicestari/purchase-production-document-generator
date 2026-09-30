@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gerador de pedidos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 40px;
+      color: #222;
+    }
+    .card {
+      max-width: 520px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 28px;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.12);
+    }
+    h1 { margin-top: 0; }
+    label { display:block; margin-bottom:8px; font-weight:700; }
+    input {
+      width:100%;
+      box-sizing:border-box;
+      padding:12px;
+      font-size:16px;
+      border:1px solid #bbb;
+      border-radius:6px;
+    }
+    button {
+      margin-top:16px;
+      width:100%;
+      padding:12px;
+      font-size:16px;
+      font-weight:700;
+      border:0;
+      border-radius:6px;
+      cursor:pointer;
+      background:#b96825;
+      color:white;
+    }
+    button:disabled { opacity:.6; cursor:wait; }
+    #status { margin-top:18px; }
+    .links { margin-top:18px; display:grid; gap:10px; }
+    .links a {
+      display:block;
+      padding:12px;
+      background:#eee;
+      border-radius:6px;
+      color:#222;
+      text-decoration:none;
+    }
+    .erro { color:#b00020; }
+
+    /* ----- Seção da logo ----- */
+    .logo-secao {
+      margin-top:28px;
+      padding-top:22px;
+      border-top:1px solid #ddd;
+    }
+    .logo-previa {
+      min-height:60px;
+      margin-bottom:12px;
+      display:flex;
+      align-items:center;
+    }
+    .logo-previa img {
+      display:none;
+      max-width:220px;
+      max-height:90px;
+    }
+    #logo-status { margin:10px 0 0; font-size:14px; }
+    .logo-ajuda { margin:8px 0 0; font-size:12px; color:#666; }
+    button.secundario { background:#555; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Gerador de documentos</h1>
+
+    <label for="pedido">Número do pedido</label>
+    <input id="pedido" type="text" placeholder="Ex.: 100001">
+
+    <button id="btn" onclick="gerar()">Gerar PDFs</button>
+
+    <div id="status"></div>
+    <div id="links" class="links"></div>
+
+    <div class="logo-secao">
+      <label for="logo-input">Logo da empresa</label>
+
+      <div class="logo-previa">
+        <img id="logo-preview" alt="Logo atual">
+      </div>
+
+      <input id="logo-input" type="file" accept="image/png,image/jpeg">
+
+      <button id="logo-botao" class="secundario" onclick="enviarLogo()">Enviar logo</button>
+
+      <p id="logo-status">Verificando logo...</p>
+      <p class="logo-ajuda">
+        Formatos: PNG ou JPG, até 2 MB. Dica: PNG com fundo transparente fica melhor no PDF.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function gerar() {
+      const pedido = document.getElementById('pedido').value.trim();
+      const btn = document.getElementById('btn');
+      const status = document.getElementById('status');
+      const links = document.getElementById('links');
+
+      if (!pedido) {
+        status.innerHTML = '<span class="erro">Informe o número do pedido.</span>';
+        return;
+      }
+
+      btn.disabled = true;
+      status.textContent = 'Gerando os dois PDFs...';
+      links.innerHTML = '';
+
+      google.script.run
+        .withSuccessHandler(function(r) {
+          btn.disabled = false;
+
+          if (!r || !r.ok) {
+            status.innerHTML = '<span class="erro">Não foi possível gerar os documentos.</span>';
+            return;
+          }
+
+          status.textContent = 'Documentos gerados.';
+          links.innerHTML =
+            '<a target="_blank" href="' + r.pedido.url + '">Abrir Pedido de Compra</a>' +
+            '<a target="_blank" href="' + r.producao.url + '">Abrir Ordem de Produção</a>';
+        })
+        .withFailureHandler(function(err) {
+          btn.disabled = false;
+          status.innerHTML = '<span class="erro">' +
+            (err && err.message ? err.message : 'Erro ao gerar os documentos.') +
+            '</span>';
+        })
+        .gerarDocumentosWeb(pedido);
+    }
+
+    document.getElementById('pedido').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') gerar();
+    });
+
+    /* ===================== LOGO ===================== */
+
+    // Largura máxima da logo enviada (a imagem é reduzida antes do envio
+    // para deixar o upload e a geração do PDF mais leves).
+    const LOGO_LARGURA_MAX = 600;
+    const LOGO_LIMITE_BYTES = 2 * 1024 * 1024;
+
+    window.addEventListener('load', atualizarStatusLogo);
+
+    function atualizarStatusLogo() {
+      google.script.run
+        .withSuccessHandler(mostrarStatusLogo)
+        .withFailureHandler(function(erro) {
+          definirStatusLogo('Erro ao verificar a logo: ' + erro.message, true);
+        })
+        .obterStatusLogo();
+    }
+
+    function mostrarStatusLogo(status) {
+      const img = document.getElementById('logo-preview');
+
+      if (status && status.configurada) {
+        img.src = status.preview;
+        img.style.display = 'block';
+        definirStatusLogo('Logo cadastrada (' + status.nome + '). Para trocar, envie outra.');
+      } else {
+        img.style.display = 'none';
+        definirStatusLogo('Nenhuma logo cadastrada. Os PDFs serão gerados sem logo.');
+      }
+    }
+
+    function definirStatusLogo(msg, erro) {
+      const el = document.getElementById('logo-status');
+      el.textContent = msg;
+      el.className = erro ? 'erro' : '';
+    }
+
+    function enviarLogo() {
+      const arquivo = document.getElementById('logo-input').files[0];
+      const botao = document.getElementById('logo-botao');
+
+      if (!arquivo) return definirStatusLogo('Escolha um arquivo PNG ou JPG primeiro.', true);
+      if (['image/png', 'image/jpeg'].indexOf(arquivo.type) === -1) {
+        return definirStatusLogo('Formato inválido. Use PNG ou JPG.', true);
+      }
+      if (arquivo.size > LOGO_LIMITE_BYTES) {
+        return definirStatusLogo('Arquivo maior que 2 MB. Escolha uma imagem menor.', true);
+      }
+
+      botao.disabled = true;
+      definirStatusLogo('Enviando...');
+
+      const leitor = new FileReader();
+      leitor.onerror = function() { finalizarEnvio('Não foi possível ler o arquivo.', true); };
+      leitor.onload = function(e) {
+        const img = new Image();
+        img.onerror = function() { finalizarEnvio('O arquivo não parece ser uma imagem válida.', true); };
+        img.onload = function() {
+          const escala = Math.min(1, LOGO_LARGURA_MAX / img.width);
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * escala);
+          canvas.height = Math.round(img.height * escala);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          const base64 = canvas.toDataURL(arquivo.type, 0.92).split(',')[1];
+
+          google.script.run
+            .withSuccessHandler(function(res) {
+              mostrarStatusLogo({ configurada: true, nome: res.nome, preview: res.preview });
+              document.getElementById('logo-input').value = '';
+              finalizarEnvio('Logo salva com sucesso!');
+            })
+            .withFailureHandler(function(erro) {
+              finalizarEnvio('Erro: ' + erro.message, true);
+            })
+            .salvarLogo(base64);
+        };
+        img.src = e.target.result;
+      };
+      leitor.readAsDataURL(arquivo);
+    }
+
+    function finalizarEnvio(msg, erro) {
+      document.getElementById('logo-botao').disabled = false;
+      definirStatusLogo(msg, erro);
+    }
+  </script>
+</body>
+</html>
