@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+
+<style>
+
+  @page {
+    size: A4 landscape;
+    margin: 9mm 10mm 9mm 10mm;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333;
+    font-size: 8.5pt;
+  }
+
+  body {
+    width: 100%;
+  }
+
+  .page {
+    width: 100%;
+    min-height: 279mm;
+    position: relative;
+  }
+
+
+  /* =========================================================
+     CABEÇALHO
+     ========================================================= */
+
+  .header {
+    position: relative;
+    width: 100%;
+    height: 67mm;
+  }
+
+
+  /* =========================================================
+     LOGO
+     ========================================================= */
+
+  .logo {
+  position: absolute;
+  left: 0;
+  top: 2mm;
+  max-width: 42mm;
+  max-height: 36mm;
+  width: auto;
+  height: auto;
+}
+
+
+  /* =========================================================
+     INFORMAÇÕES DA EMPRESA
+     ========================================================= */
+
+  .company {
+    position: absolute;
+
+    left: 48mm;
+    right: 35mm;
+    top: 3mm;
+
+    text-align: left;
+    line-height: 1.35;
+  }
+
+  .company .name {
+    font-weight: 700;
+    font-size: 11pt;
+    margin-bottom: 1.5mm;
+  }
+
+  .company .line {
+    font-size: 8pt;
+  }
+
+
+  /* =========================================================
+     DATA E NÚMERO DO PEDIDO
+     ========================================================= */
+
+  .order-box {
+    position: absolute;
+
+    right: 0;
+    top: 3mm;
+
+    width: 30mm;
+
+    text-align: right;
+  }
+
+  .order-box .label {
+    margin-bottom: 0;
+  }
+
+  .order-box .number {
+    font-size: 12pt;
+    font-weight: 700;
+  }
+
+
+  /* =========================================================
+     DADOS DO CLIENTE
+     ========================================================= */
+
+  .client-grid {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    top: 42mm;
+    bottom: auto;
+
+    display: grid;
+
+    grid-template-columns: 1.45fr 1.05fr 1fr;
+
+    column-gap: 5mm;
+    row-gap: 3mm;
+  }
+
+
+  .field {
+    min-height: 8mm;
+  }
+
+  .label {
+    color: #c86120;
+
+    font-weight: 700;
+    font-size: 8pt;
+
+    margin-bottom: 1mm;
+  }
+
+  .value {
+    font-size: 8.5pt;
+
+    border-bottom: 1px solid #777;
+
+    min-height: 5mm;
+
+    padding-bottom: 1mm;
+  }
+
+
+  .client {
+    grid-column: 1 / 2;
+  }
+
+  .city {
+    grid-column: 2 / 3;
+  }
+
+  .phone {
+    grid-column: 3 / 4;
+  }
+
+  .address {
+    grid-column: 1 / 2;
+  }
+
+  .cep {
+    grid-column: 2 / 3;
+  }
+
+  .bairro {
+    grid-column: 3 / 4;
+  }
+
+
+  /* =========================================================
+     TÍTULO
+     ========================================================= */
+
+  .title {
+    border: 1px solid #222;
+    border-bottom: 0;
+
+    padding: 2.5mm 0;
+
+    text-align: center;
+
+    font-size: 11pt;
+    font-weight: 700;
+
+    color: #c86120;
+  }
+
+
+  /* =========================================================
+     TABELA DE ITENS
+     ========================================================= */
+
+  table.items {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+  }
+
+  .items th,
+  .items td {
+    border: 1px solid #222;
+
+    padding: 1.5mm 1mm;
+
+    text-align: center;
+    vertical-align: middle;
+
+    height: 7mm;
+
+    overflow: hidden;
+  }
+
+  .items th {
+    color: #c86120;
+
+    font-weight: 700;
+
+    font-size: 7.5pt;
+
+    white-space: nowrap;
+  }
+
+  .items td {
+    font-size: 7pt;
+  }
+
+  .items .left {
+    text-align: left;
+  }
+
+
+  /* LARGURA DAS COLUNAS */
+
+  .items th:nth-child(1),
+  .items td:nth-child(1) {
+    width: 4%;
+  }
+
+  .items th:nth-child(2),
+  .items td:nth-child(2) {
+    width: 7%;
+  }
+
+  .items th:nth-child(3),
+  .items td:nth-child(3) {
+    width: 19%;
+  }
+
+  .items th:nth-child(4),
+  .items td:nth-child(4) {
+    width: 5%;
+  }
+
+  .items th:nth-child(5),
+  .items td:nth-child(5) {
+    width: 5%;
+  }
+
+  .items th:nth-child(6),
+  .items td:nth-child(6) {
+    width: 5%;
+  }
+
+  .items th:nth-child(7),
+  .items td:nth-child(7) {
+    width: 5%;
+  }
+
+  .items th:nth-child(8),
+  .items td:nth-child(8) {
+    width: 5%;
+  }
+
+  .items th:nth-child(9),
+  .items td:nth-child(9) {
+    width: 8%;
+  }
+
+  .items th:nth-child(10),
+  .items td:nth-child(10) {
+    width: 6%;
+  }
+
+  .items th:nth-child(11),
+  .items td:nth-child(11) {
+    width: 5%;
+  }
+
+  .items th:nth-child(12),
+  .items td:nth-child(12) {
+    width: 6%;
+  }
+
+  .items th:nth-child(13),
+  .items td:nth-child(13) {
+    width: 7%;
+  }
+
+  .items th:nth-child(14),
+  .items td:nth-child(14) {
+    width: 7%;
+  }
+
+  .items th:nth-child(15),
+  .items td:nth-child(15) {
+    width: 6%;
+  }
+
+
+  /* =========================================================
+     TOTAIS
+     ========================================================= */
+
+  .totals {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr 1fr;
+
+    border: 1px solid #222;
+    border-top: 0;
+  }
+
+  .total-box {
+    min-height: 10mm;
+
+    padding: 2mm 3mm;
+
+    border-right: 1px solid #222;
+  }
+
+  .total-box:last-child {
+    border-right: 0;
+  }
+
+  .total-label {
+    color: #c86120;
+
+    font-weight: 700;
+
+    font-size: 7.5pt;
+  }
+
+  .total-value {
+    font-weight: 700;
+
+    font-size: 9pt;
+
+    margin-top: 1mm;
+  }
+
+
+  /* =========================================================
+     OBSERVAÇÕES / CONDIÇÕES
+     ========================================================= */
+
+  .notes {
+    margin-top: 5mm;
+
+    border-top: 1px solid #222;
+
+    padding-top: 3mm;
+  }
+
+  .notes-title {
+    font-size: 10.5pt;
+
+    font-weight: 700;
+
+    margin-bottom: 2mm;
+  }
+
+  .note-line {
+    min-height: 6mm;
+
+    line-height: 1.35;
+  }
+
+  .note-line strong {
+    font-weight: 700;
+  }
+
+
+  /* =========================================================
+     DATAS
+     ========================================================= */
+
+  .dates {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 5mm;
+
+    margin-top: 2mm;
+  }
+
+  .date-box {
+    border: 1px solid #777;
+
+    padding: 2mm;
+  }
+
+
+  /* =========================================================
+     DADOS BANCÁRIOS
+     ========================================================= */
+
+  .bank {
+    margin-top: 5mm;
+
+    border-top: 2px solid #c86120;
+
+    padding-top: 2mm;
+  }
+
+  .bank-title {
+    color: #c86120;
+
+    font-weight: 700;
+
+    font-size: 10.5pt;
+
+    margin-bottom: 2mm;
+  }
+
+  .bank-grid {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    column-gap: 10mm;
+
+    row-gap: 1.5mm;
+  }
+
+  .bank-row {
+    min-height: 5mm;
+  }
+
+  .bank-row .bank-label {
+    font-weight: 700;
+  }
+
+
+  /* =========================================================
+     RODAPÉ
+     ========================================================= */
+
+  .footer {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    bottom: 0;
+
+    font-size: 6.5pt;
+
+    color: #666;
+
+    text-align: center;
+  }
+
+
+  /* =========================================================
+     IMPRESSÃO
+     ========================================================= */
+
+  .page-break {
+    page-break-after: always;
+  }
+
+  @media print {
+
+    .page {
+      min-height: 279mm;
+    }
+
+  }
+
+</style>
+</head>
+
+
+<body>
+
+<div class="page">
+
+
+  <!-- =======================================================
+       CABEÇALHO
+       ======================================================= -->
+
+  <div class="header">
+
+
+    <!-- LOGO -->
+
+    <img
+      class="logo"
+      src="{{LOGO}}"
+      alt="Logo"
+    >
+
+
+    <!-- EMPRESA -->
+
+    <div class="company">
+
+      <div class="name">
+        {{RAZAO_SOCIAL}}
+      </div>
+
+      <div class="line">
+        {{CNPJ_IE}}
+      </div>
+
+      <div class="line">
+        {{ENDERECO_EMPRESA}}
+      </div>
+
+      <div class="line">
+        {{BAIRRO_CIDADE_EMPRESA}}
+      </div>
+
+    </div>
+
+
+    <!-- DATA / NÚMERO -->
+
+    <div class="order-box">
+
+      <div class="label">
+        DATA
+      </div>
+
+      <div>
+        {{DATA}}
+      </div>
+
+      <div
+        class="label"
+        style="margin-top:2mm;"
+      >
+        NÚMERO
+      </div>
+
+      <div class="number">
+        {{PEDIDO}}
+      </div>
+
+    </div>
+
+
+    <!-- DADOS DO CLIENTE -->
+
+    <div class="client-grid">
+
+
+      <div class="field client">
+
+        <div class="label">
+          Cliente:
+        </div>
+
+        <div class="value">
+          {{CLIENTE}}
+        </div>
+
+      </div>
+
+
+      <div class="field city">
+
+        <div class="label">
+          Cidade:
+        </div>
+
+        <div class="value">
+          {{CIDADE}}
+        </div>
+
+      </div>
+
+
+      <div class="field phone">
+
+        <div class="label">
+          Telefone:
+        </div>
+
+        <div class="value">
+          {{TELEFONE}}
+        </div>
+
+      </div>
+
+
+      <div class="field address">
+
+        <div class="label">
+          Endereço:
+        </div>
+
+        <div class="value">
+          {{ENDERECO}}
+        </div>
+
+      </div>
+
+
+      <div class="field cep">
+
+        <div class="label">
+          CEP:
+        </div>
+
+        <div class="value">
+          {{CEP}}
+        </div>
+
+      </div>
+
+
+      <div class="field bairro">
+
+        <div class="label">
+          Bairro:
+        </div>
+
+        <div class="value">
+          {{BAIRRO}}
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+  <!-- =======================================================
+       TÍTULO
+       ======================================================= -->
+
+  <div class="title">
+    {{TITULO}}
+  </div>
+
+
+  <!-- =======================================================
+       TABELA
+       ======================================================= -->
+
+  <table class="items">
+
+    <thead>
+
+      <tr>
+
+        <th>ITEM</th>
+
+        <th>CÓDIGO</th>
+
+        <th>PEÇA</th>
+
+        <th>LARGURA</th>
+
+        <th>ALTURA</th>
+
+        <th>ESP</th>
+
+        <th>QTDE</th>
+
+        <th>FACES</th>
+
+        <th>ACABAMENTO</th>
+
+        <th>COR</th>
+
+        <th>m²</th>
+
+        <th>FURAÇÃO</th>
+
+        <th>USINAGEM</th>
+
+        <th style="{{DISPLAY_PRECO}}">
+          R$ Unit
+        </th>
+
+        <th style="{{DISPLAY_TOTAL}}">
+          R$
+        </th>
+
+      </tr>
+
+    </thead>
+
+
+    <tbody>
+
+      {{ROWS}}
+
+    </tbody>
+
+  </table>
+
+
+  <!-- =======================================================
+       TOTAIS
+       ======================================================= -->
+
+  <div class="totals">
+
+
+    <div class="total-box">
+
+      <div class="total-label">
+        Total de Peças
+      </div>
+
+      <div class="total-value">
+        {{TOTAL_PECAS}}
+      </div>
+
+    </div>
+
+
+    <div class="total-box">
+
+      <div class="total-label">
+        Total m²
+      </div>
+
+      <div class="total-value">
+        {{TOTAL_M2}}
+      </div>
+
+    </div>
+
+
+    <div class="total-box">
+
+      <div class="total-label">
+        R$ - Total do orçamento
+      </div>
+
+      <div class="total-value">
+        {{TOTAL_ORCAMENTO}}
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  <!-- =======================================================
+       OBSERVAÇÕES
+       ======================================================= -->
+
+  <div class="notes">
+
+
+    <div class="notes-title">
+      ATENÇÃO AS INFORMAÇÕES ABAIXO
+    </div>
+
+
+    <div class="note-line">
+
+      <strong>
+        Prazo de Embarque:
+      </strong>
+
+      {{DATA_EMBARQUE}}
+
+    </div>
+
+
+    <div class="note-line">
+      Frete CIF - Por nossa conta
+    </div>
+
+
+    <div class="note-line">
+
+      <strong>
+        * CONDIÇÃO DE PAGAMENTO: ANTECIPADO
+      </strong>
+
+    </div>
+
+
+    <div class="dates">
+
+
+      <div class="date-box">
+
+        <strong>
+          Data do recebimento do pedido:
+        </strong>
+
+        <br>
+
+        {{DATA_RECEBIMENTO}}
+
+      </div>
+
+
+      <div class="date-box">
+
+        <strong>
+          Data de embarque:
+        </strong>
+
+        <br>
+
+        {{DATA_EMBARQUE}}
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+  <!-- =======================================================
+       DADOS BANCÁRIOS
+       ======================================================= -->
+
+  <div class="bank">
+
+
+    <div class="bank-title">
+      DADOS BANCÁRIOS
+    </div>
+
+
+    <div class="bank-grid">
+
+
+      <div class="bank-row">
+
+        <span class="bank-label">
+          BANCO:
+        </span>
+
+        {{BANCO}}
+
+      </div>
+
+
+      <div class="bank-row">
+
+        <span class="bank-label">
+          AG:
+        </span>
+
+        {{AGENCIA}}
+
+      </div>
+
+
+      <div class="bank-row">
+
+        <span class="bank-label">
+          C/C:
+        </span>
+
+        {{CONTA}}
+
+      </div>
+
+
+      <div class="bank-row">
+
+        <span class="bank-label">
+          Razão social:
+        </span>
+
+        {{RAZAO_BANCO}}
+
+      </div>
+
+
+      <div class="bank-row">
+
+        <span class="bank-label">
+          CNPJ:
+        </span>
+
+        {{CNPJ_BANCO}}
+
+      </div>
+
+
+      <div class="bank-row">
+
+        <span class="bank-label">
+          PIX:
+        </span>
+
+        {{PIX}}
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+  <!-- =======================================================
+       RODAPÉ
+       ======================================================= -->
+
+  <div class="footer">
+    ORÇAMENTO VÁLIDO POR 20 DIAS
+  </div>
+
+
+</div>
+
+</body>
+</html>
+```
