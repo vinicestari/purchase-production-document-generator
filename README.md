@@ -230,7 +230,7 @@ Crie ou substitua os arquivos do projeto pelos arquivos deste repositório.
 A estrutura deve ficar:
 
 ```text
-Code.gs
+Código.gs
 index.html
 pedido.html
 ordem_producao.html
@@ -326,7 +326,7 @@ Caso a pasta ainda não exista, o sistema cria automaticamente uma.
           └──────────────┼──────────────┘
                          │
                          ▼
-                 Code.gs / Apps Script
+                 Código.gs / Apps Script
                          │
                          ▼
                 obterDadosPedido()
@@ -407,7 +407,7 @@ ordem_producao.html
 * informações apresentadas;
 * orientação da página.
 
-A lógica de obtenção dos dados permanece no `Code.gs`.
+A lógica de obtenção dos dados permanece no `Código.gs`.
 
 
 # Importante
@@ -424,7 +424,7 @@ dados
 
 são utilizadas diretamente pelo código.
 
-Caso seja necessário utilizar outros nomes, altere as constantes no início do `Code.gs`:
+Caso seja necessário utilizar outros nomes, altere as constantes no início do `Código.gs`:
 
 ```javascript
 const NOME_ABA_PEDIDOS = 'pedidos';
